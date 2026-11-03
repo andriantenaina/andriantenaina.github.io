@@ -1,0 +1,24 @@
+# Keeps GitHub Actions and npm packages on their latest versions.
+# Each update arrives as a pull request; the deploy workflow builds it, merge it when the check is green.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # Minor/patch updates of every package in one PR; majors come one by one.
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # astro check does not support TypeScript 7 yet (it asks for TypeScript 6). Remove once it does.
+      - dependency-name: typescript
+        versions: ['>=7']
