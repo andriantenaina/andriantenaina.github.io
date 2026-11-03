@@ -24,7 +24,8 @@ jobs:
       SITE_URL: https://andriantenaina.github.io
       PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
       # Search-engine ownership checks: Settings → Secrets and variables → Actions → Variables.
-      PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+      # Public by design (it ends up in the page <head>), so a default is kept here.
+      PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION || 'cKTFiziCN5S1C9_jJ8X4VX8vGs5fSO9XzR4-Y3QQ1-c' }}
       PUBLIC_BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
     steps:
       - uses: actions/checkout@v7
