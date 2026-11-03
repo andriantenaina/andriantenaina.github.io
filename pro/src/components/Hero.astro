@@ -115,10 +115,21 @@ const last = h.rotating.length - 1;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---- Rotating headline ending ----
+  /**
+   * Decorative animations wait until the page has loaded and the browser is idle,
+   * so they never compete with the first paint on slow phones.
+   */
+  function afterFirstPaint(fn: () => void) {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+    const go = () => setTimeout(() => idle(fn), 800);
+    if (document.readyState === 'complete') go();
+    else addEventListener('load', go, { once: true });
+  }
+
   const words = [...document.querySelectorAll<HTMLElement>('[data-rotator] [data-word]')];
   if (words.length > 1 && !reduced) {
     let i = words.length - 1;
-    setInterval(() => {
+    afterFirstPaint(() => setInterval(() => {
       if (document.hidden) return;
       const prev = words[i];
       i = (i + 1) % words.length;
@@ -129,7 +140,7 @@ const last = h.rotating.length - 1;
       next.style.opacity = '0';
       next.classList.remove('invisible');
       animate(next, { opacity: [0, 1], transform: ['translateY(0.35em)', 'translateY(0)'] }, { duration: 0.45, delay: 0.15, ease: [0.22, 1, 0.36, 1] });
-    }, 2800);
+    }, 2800));
   }
 
   // ---- Data-flow background: packets travelling along lanes between nodes ----
@@ -223,21 +234,23 @@ const last = h.rotating.length - 1;
       raf = requestAnimationFrame(loop);
     };
 
-    readColors();
-    setup();
-    start();
-    new ResizeObserver(() => {
+    afterFirstPaint(() => {
+      readColors();
       setup();
       start();
-    }).observe(canvas);
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      start();
-    }).observe(canvas);
-    document.addEventListener('visibilitychange', start);
-    window.addEventListener('themechange', () => {
-      readColors();
-      draw();
+      new ResizeObserver(() => {
+        setup();
+        start();
+      }).observe(canvas);
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        start();
+      }).observe(canvas);
+      document.addEventListener('visibilitychange', start);
+      window.addEventListener('themechange', () => {
+        readColors();
+        draw();
+      });
     });
   }
 </script>

@@ -55,6 +55,17 @@ En mode dev séparé, le bouton qui mène à l'autre version ne fonctionne pas (
 
 Résultat du build : **un seul dossier à publier, `pro/dist/`** (la version 3D est copiée dans `pro/dist/3d/` par `shared/scripts/merge-sites.mjs`).
 
+## Référencement (SEO)
+
+Déjà en place dans le code :
+- Titres et descriptions avec les mots-clés recherchés par les recruteurs (Data Engineer, DevOps, Kafka, Spark, Airflow…), en FR et EN, avec `hreflang`.
+- Données structurées Google (JSON-LD) : `ProfilePage` + `Person` (métier, compétences, langues, écoles, lien LinkedIn via `sameAs`) sur l'accueil ; `CreativeWork` + fil d'Ariane sur les études de cas.
+- `sitemap-index.xml` avec date de mise à jour, `robots.txt`, page 404 non indexée, version 3D déclarée comme variante (canonical vers la version classique).
+- **IndexNow** : à chaque déploiement, le workflow prévient Bing, Yandex, Seznam, Naver… (clé publique dans `pro/public/<clé>.txt`).
+- Balises de vérification Google / Bing lues depuis les variables du dépôt GitHub `GOOGLE_SITE_VERIFICATION` et `BING_SITE_VERIFICATION` (Settings → Secrets and variables → Actions → onglet **Variables**). Mettez uniquement le code (`content="…"`), pas la balise entière.
+
+Quand vous changez le contenu, mettez à jour `CONTENT_UPDATED` dans `shared/seo.ts`.
+
 ## Configuration (`.env`)
 
 Copiez `.env.example` dans `pro/.env` **et** `creative/.env` (même contenu) :

@@ -11,7 +11,10 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     sitemap({
-      filter: (page) => !page.endsWith(`${site.replace(/\/$/, '')}/`),
+      filter: (page) => !page.endsWith(`${site.replace(/\/$/, '')}/`) && !page.includes('/404'),
+      // Tells crawlers when pages changed (the build date = the deploy date).
+      lastmod: new Date(),
+      changefreq: 'monthly',
       i18n: { defaultLocale: 'fr', locales: { fr: 'fr', en: 'en' } },
     }),
   ],

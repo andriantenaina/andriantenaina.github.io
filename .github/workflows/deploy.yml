@@ -23,6 +23,9 @@ jobs:
     env:
       SITE_URL: https://andriantenaina.github.io
       PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
+      # Search-engine ownership checks: Settings → Secrets and variables → Actions → Variables.
+      PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+      PUBLIC_BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -47,3 +50,22 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  # Free instant indexing: tells Bing, Yandex, Seznam, Naver… (IndexNow) that the pages changed.
+  # The key is public by design; it is served at /<key>.txt (pro/public).
+  indexnow:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-26.04
+    env:
+      HOST: andriantenaina.github.io
+      KEY: 58d3d81b94362bab3def76e637a6ba72
+    steps:
+      - name: Submit sitemap URLs
+        run: |
+          urls=$(curl -fsSL "https://$HOST/sitemap-0.xml" | grep -o '<loc>[^<]*</loc>' | sed -e 's/<loc>//' -e 's#</loc>##' | jq -R . | jq -s -c .)
+          echo "Submitting: $urls"
+          curl -fsS -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"$HOST\",\"key\":\"$KEY\",\"keyLocation\":\"https://$HOST/$KEY.txt\",\"urlList\":$urls}" \
+            -w "IndexNow HTTP %{http_code}\n"

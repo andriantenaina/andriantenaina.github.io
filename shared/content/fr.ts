@@ -4,9 +4,9 @@ import { dataPlatformDiagram, devopsDiagram, observabilityDiagram } from './diag
 export const fr: Content = {
   lang: 'fr',
   meta: {
-    title: 'Fanilo Andriantenaina · Data & DevOps Engineer',
+    title: 'Fanilo Andriantenaina · Data Engineer & DevOps (Kafka, Spark, Airflow)',
     description:
-      "Data & DevOps Engineer, 4+ ans d’expérience : data warehouse temps réel (StarRocks, Debezium, Kafka, Spark, Airflow), observabilité (ELK, Grafana), Docker et Kubernetes. Disponible immédiatement, ouvert à la relocalisation.",
+      'Data Engineer & DevOps, 4+ ans en production : Kafka, Debezium, Spark, Airflow, StarRocks, ELK, Kubernetes. Disponible immédiatement, télétravail ou relocalisation (Canada, Belgique, France).',
     ogAlt: 'Fanilo Andriantenaina, Data & DevOps Engineer',
   },
   nav: { work: 'Réalisations', about: 'À propos', skills: 'Compétences', journey: 'Parcours', contact: 'Contact' },

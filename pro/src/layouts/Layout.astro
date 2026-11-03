@@ -15,9 +15,10 @@ interface Props {
   title?: string;
   description?: string;
   jsonLd?: object;
+  noindex?: boolean;
 }
 
-const { lang, path = '', title, description, jsonLd } = Astro.props;
+const { lang, path = '', title, description, jsonLd, noindex = false } = Astro.props;
 const c = getContent(lang);
 const site = Astro.site!;
 const pageTitle = title ? `${title} · ${profile.name}` : c.meta.title;
@@ -25,6 +26,10 @@ const pageDesc = description ?? c.meta.description;
 const canonical = new URL(`/${lang}/${path}`, site).href;
 const alt = (l: Lang) => new URL(`/${l}/${path}`, site).href;
 const ogImage = new URL(`/og-${lang}.png`, site).href;
+const isHome = path === '' && !noindex;
+// Free ownership checks for Google Search Console and Bing Webmaster Tools (set in the deploy workflow).
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION;
 const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC;
 const umamiId = import.meta.env.PUBLIC_UMAMI_ID;
 ---
@@ -37,6 +42,9 @@ const umamiId = import.meta.env.PUBLIC_UMAMI_ID;
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
     <meta name="author" content={profile.name} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f8fc" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
@@ -49,7 +57,17 @@ const umamiId = import.meta.env.PUBLIC_UMAMI_ID;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <meta property="og:type" content="website" />
+    {
+      isHome ? (
+        <>
+          <meta property="og:type" content="profile" />
+          <meta property="profile:first_name" content="Fanilo" />
+          <meta property="profile:last_name" content="Andriantenaina" />
+        </>
+      ) : (
+        <meta property="og:type" content="article" />
+      )
+    }
     <meta property="og:site_name" content={profile.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
