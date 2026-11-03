@@ -1,0 +1,17 @@
+{
+  "name": "fanilo-portfolio",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "pro",
+    "creative"
+  ],
+  "scripts": {
+    "assets": "node shared/scripts/build-assets.mjs",
+    "dev:pro": "npm run dev -w pro",
+    "dev:creative": "npm run dev -w creative",
+    "build": "npm run assets && npm run build -w pro && npm run build -w creative && node shared/scripts/merge-sites.mjs",
+    "preview": "npm run preview -w pro"
+  }
+}

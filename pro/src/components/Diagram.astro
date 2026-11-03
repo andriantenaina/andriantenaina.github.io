@@ -1,0 +1,203 @@
+---
+import type { Diagram } from '@fa/shared';
+
+interface Props {
+  diagram: Diagram;
+  alt: string;
+  caption?: string;
+  hint?: string;
+  /** Compact preview: no detail panel, no keyboard stops (used inside project cards). */
+  preview?: boolean;
+}
+const { diagram, alt, caption, hint, preview = false } = Astro.props;
+
+const W = 196;
+const H = 92;
+const NW = 152;
+const NH = 54;
+const PAD = 10;
+const width = (diagram.cols - 1) * W + NW + PAD * 2;
+const height = (diagram.rows - 1) * H + NH + PAD * 2;
+const pos = Object.fromEntries(diagram.nodes.map((n) => [n.id, { x: PAD + n.col * W, y: PAD + n.row * H }]));
+const hot = new Set(diagram.hot ?? []);
+const uid = `dg${Math.random().toString(36).slice(2, 7)}`;
+
+const edges = diagram.edges.map(([a, b], i) => {
+  const p = pos[a];
+  const q = pos[b];
+  const x1 = p.x + NW;
+  const y1 = p.y + NH / 2;
+  const x2 = q.x - 3;
+  const y2 = q.y + NH / 2;
+  const mx = Math.round((x1 + x2) / 2);
+  // Orthogonal routing with rounded corners.
+  const r = Math.min(10, Math.abs(y2 - y1) / 2);
+  const dir = y2 > y1 ? 1 : -1;
+  const d =
+    y1 === y2
+      ? `M${x1} ${y1} H${x2}`
+      : `M${x1} ${y1} H${mx - r} Q${mx} ${y1} ${mx} ${y1 + dir * r} V${y2 - dir * r} Q${mx} ${y2} ${mx + r} ${y2} H${x2}`;
+  return { id: `${uid}-e${i}`, d, from: a, to: b, hot: hot.has(a) && hot.has(b) };
+});
+
+const ordered = [...diagram.nodes].sort((a, b) => a.col - b.col || a.row - b.row);
+const targets = (id: string) => diagram.edges.filter(([a]) => a === id).map(([, b]) => diagram.nodes.find((n) => n.id === b)!.label);
+---
+
+<figure class="diagram" data-diagram data-preview={preview ? '' : undefined}>
+  <svg viewBox={`0 0 ${width} ${height}`} role={preview ? 'img' : 'group'} aria-label={alt} class:list={['h-auto w-full', !preview && 'hidden md:block']}>
+    <defs>
+      <marker id={`${uid}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1 7 4 1 7" fill="none" stroke="context-stroke" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+      </marker>
+    </defs>
+    {
+      edges.map((e) => (
+        <path id={e.id} d={e.d} pathLength="1" fill="none" class:list={['edge', e.hot && 'hot']} data-from={e.from} data-to={e.to} stroke-width="1.5" marker-end={`url(#${uid}-arrow)`} />
+      ))
+    }
+    {
+      edges
+        .filter((e) => e.hot)
+        .flatMap((e, i) =>
+          [0, 0.5].map((offset) => (
+            <circle r="3" class="packet" aria-hidden="true">
+              {/* Negative begin = already mid-flight at load, so no packet waits at the SVG origin. */}
+              <animateMotion dur="2.6s" begin={`-${(i * 0.37 + offset * 2.6).toFixed(2)}s`} repeatCount="indefinite">
+                <mpath href={`#${e.id}`} />
+              </animateMotion>
+            </circle>
+          )),
+        )
+    }
+    {
+      diagram.nodes.map((n) => {
+        const { x, y } = pos[n.id];
+        return (
+          <g
+            class:list={['node', hot.has(n.id) && 'hot']}
+            data-id={n.id}
+            data-label={n.label}
+            data-desc={n.desc}
+            tabindex={preview ? undefined : 0}
+            role={preview ? undefined : 'button'}
+            aria-label={preview ? undefined : `${n.label}${n.desc ? ` : ${n.desc}` : ''}`}
+          >
+            <rect x={x + 0.5} y={y + 0.5} width={NW} height={NH} rx="10" stroke-width="1" />
+            <rect class="bar" x={x + 10} y={y + 16} width="3" height={NH - 32} rx="1.5" />
+            <text x={x + 22} y={y + (n.sub ? 24 : 32)} fill="var(--fg)" font-size="13" font-weight="600" font-family="var(--font-sans)">
+              {n.label}
+            </text>
+            {n.sub && (
+              <text x={x + 22} y={y + 41} fill="var(--muted)" font-size="10.5" font-family="var(--font-mono)">
+                {n.sub}
+              </text>
+            )}
+          </g>
+        );
+      })
+    }
+  </svg>
+
+  {
+    !preview && (
+      <>
+        <p data-detail aria-live="polite" class="mt-4 hidden min-h-[3.2em] max-w-[70ch] text-step--1 text-muted md:block">
+          <span class="meta">{hint}</span>
+        </p>
+        <ol class="space-y-3 md:hidden" aria-label={alt}>
+          {ordered.map((n) => {
+            const to = targets(n.id);
+            return (
+              <li class:list={['card p-4', hot.has(n.id) && 'border-l-2 border-l-accent']}>
+                <p class="font-semibold">
+                  {n.label} {n.sub && <span class="meta ml-1">{n.sub}</span>}
+                </p>
+                {n.desc && <p class="mt-1 text-step--1 text-muted">{n.desc}</p>}
+                {to.length > 0 && <p class="meta mt-2 text-accent">→ {to.join(', ')}</p>}
+              </li>
+            );
+          })}
+        </ol>
+      </>
+    )
+  }
+  {caption && <figcaption class="meta mt-3">{caption}</figcaption>}
+</figure>
+
+<script>
+  import { inView } from 'motion';
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-diagram]')) {
+    const svg = fig.querySelector('svg')!;
+    const nodes = [...fig.querySelectorAll<SVGGElement>('.node')];
+    const edges = [...fig.querySelectorAll<SVGPathElement>('.edge')];
+    const detail = fig.querySelector<HTMLElement>('[data-detail]');
+    const hint = detail?.innerHTML ?? '';
+    let pinned: string | null = null;
+
+    // Draw edges in when the diagram scrolls into view; run packets only while visible.
+    if (!reduced) {
+      edges.forEach((e) => {
+        e.style.strokeDasharray = '1';
+        e.style.strokeDashoffset = '1';
+      });
+    }
+    svg.pauseAnimations?.();
+    inView(fig, () => {
+      edges.forEach((e, i) => {
+        e.style.transition = `stroke-dashoffset 0.9s cubic-bezier(.22,1,.36,1) ${i * 0.08}s, stroke 150ms, opacity 150ms`;
+        e.style.strokeDashoffset = '0';
+      });
+      if (!reduced) svg.unpauseAnimations?.();
+      return () => svg.pauseAnimations?.();
+    });
+
+    if (fig.hasAttribute('data-preview')) continue;
+
+    const show = (id: string | null) => {
+      fig.classList.toggle('has-focus', !!id);
+      const related = new Set(id ? [id] : []);
+      edges.forEach((e) => {
+        const lit = !!id && (e.dataset.from === id || e.dataset.to === id);
+        e.classList.toggle('lit', lit);
+        if (lit) {
+          related.add(e.dataset.from!);
+          related.add(e.dataset.to!);
+        }
+      });
+      nodes.forEach((n) => {
+        n.classList.toggle('is-active', n.dataset.id === id);
+        n.classList.toggle('is-related', related.has(n.dataset.id!));
+      });
+      if (detail) {
+        const n = nodes.find((x) => x.dataset.id === id);
+        detail.innerHTML = n ? `<strong class="text-fg">${n.dataset.label}</strong> · ${n.dataset.desc ?? ''}` : hint;
+      }
+    };
+
+    nodes.forEach((n) => {
+      n.addEventListener('pointerenter', () => !pinned && show(n.dataset.id!));
+      n.addEventListener('pointerleave', () => !pinned && show(null));
+      n.addEventListener('focus', () => show(n.dataset.id!));
+      n.addEventListener('blur', () => !pinned && show(null));
+      const toggle = () => {
+        pinned = pinned === n.dataset.id ? null : n.dataset.id!;
+        show(pinned ?? n.dataset.id!);
+      };
+      n.addEventListener('click', toggle);
+      n.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+        if (e.key === 'Escape') {
+          pinned = null;
+          show(null);
+        }
+      });
+    });
+  }
+</script>

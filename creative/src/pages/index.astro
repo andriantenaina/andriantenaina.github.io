@@ -1,0 +1,32 @@
+---
+import { profile } from '@fa/shared';
+const site = Astro.site!;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{profile.name} · Data & DevOps Engineer</title>
+    <link rel="canonical" href={new URL('/en/', site).href} />
+    <meta name="robots" content="noindex, follow" />
+    <!-- /3d/ → /3d/{fr|en}/ from the browser language. -->
+    <script is:inline>
+      var l = (navigator.languages || [navigator.language || 'en']).some(function (x) {
+        return /^fr/i.test(x);
+      })
+        ? 'fr'
+        : 'en';
+      location.replace('/3d/' + l + '/');
+    </script>
+    <noscript><meta http-equiv="refresh" content="0; url=/3d/en/" /></noscript>
+    <style>
+      body { background: #0b1120; color: #e8ecf4; font-family: system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; }
+      a { color: #4d86ff; margin: 0 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <p><a href="/3d/fr/">Français</a> · <a href="/3d/en/">English</a></p>
+  </body>
+</html>

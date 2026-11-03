@@ -1,0 +1,70 @@
+---
+// Chooses between the WebGL scene and a static line drawing, after the page has loaded.
+// Add ?3d=1 / ?3d=0 to the URL to force either (useful for headless testing).
+const pts = [
+  [80, 120],
+  [210, 260],
+  [330, 150],
+  [450, 300],
+  [570, 170],
+  [690, 320],
+  [810, 190],
+  [920, 290],
+];
+---
+
+<div id="scene-root"></div>
+
+<div data-poster hidden aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 flex items-start justify-end pt-[22vh] opacity-60 lg:items-center lg:pt-0 lg:opacity-100">
+  <svg viewBox="0 0 1000 420" class="h-auto w-[min(1100px,140vw)] text-line" fill="none">
+    <polyline points={pts.map((p) => p.join(',')).join(' ')} stroke="currentColor" stroke-width="1"></polyline>
+    {
+      pts.map(([x, y], i) => (
+        <g>
+          <circle cx={x} cy={y} r="18" stroke="currentColor" />
+          <circle cx={x} cy={y} r="3.5" fill={i === 0 ? 'var(--accent)' : 'currentColor'} stroke="none" />
+        </g>
+      ))
+    }
+  </svg>
+</div>
+
+<script>
+  function canRun3D(): boolean {
+    const force = new URLSearchParams(location.search).get('3d');
+    if (force === '1') return true;
+    if (force === '0') return false;
+    // Phones and tablets get the static drawing: battery, heat and readability first.
+    if (!matchMedia('(min-width: 48rem) and (pointer: fine)').matches) return false;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    if (nav.connection?.saveData) return false;
+    if (nav.deviceMemory !== undefined && nav.deviceMemory < 4) return false;
+    if (nav.hardwareConcurrency !== undefined && nav.hardwareConcurrency < 4) return false;
+    try {
+      const gl = document.createElement('canvas').getContext('webgl2');
+      if (!gl) return false;
+      const info = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (/swiftshader|llvmpipe|software/i.test(renderer)) return false;
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
+  const start = () => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 300));
+    idle(async () => {
+      if (canRun3D()) {
+        const { mountScene } = await import('./mount-scene');
+        mountScene(document.getElementById('scene-root')!);
+      } else {
+        document.querySelector<HTMLElement>('[data-poster]')!.hidden = false;
+      }
+    });
+  };
+  if (document.readyState === 'complete') start();
+  else addEventListener('load', start, { once: true });
+</script>

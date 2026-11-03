@@ -1,0 +1,58 @@
+---
+import { getContent, type Lang } from '@fa/shared';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const stages = c.ui.stages;
+---
+
+<!-- Desktop: vertical rail on the left. Mobile: one line under the header. Purely indicative, hidden from AT. -->
+<nav data-rail aria-hidden="true" class="no-print pointer-events-none fixed top-1/2 left-[max(1.5rem,env(safe-area-inset-left))] z-30 hidden -translate-y-1/2 opacity-0 transition-opacity duration-300 data-[on]:opacity-100 lg:block">
+  <ol class="meta space-y-2.5">
+    {
+      stages.map((s, i) => (
+        <li data-stage={i} class="group flex items-center gap-3 transition-colors duration-200 data-[on]:text-fg">
+          <span class="h-px w-3 bg-current transition-[width] duration-200 group-data-[on]:w-7 group-data-[on]:bg-accent" />
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <span>{s}</span>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<div aria-hidden="true" class="no-print meta pointer-events-none fixed inset-x-0 top-[calc(var(--header-h)+env(safe-area-inset-top))] z-30 border-b border-line bg-bg lg:hidden">
+  <div class="wrap flex h-8 items-center justify-between">
+    <span><span data-stage-num class="num text-accent">01</span> / {String(stages.length).padStart(2, '0')}</span>
+    <span data-stage-name>{stages[0]}</span>
+  </div>
+  <div class="h-px bg-accent origin-left scale-x-0" data-stage-bar></div>
+</div>
+
+<script define:vars={{ stages }}>
+  // Inline (no bundling) so it runs immediately; mirrors creative/src/lib/stage.ts.
+  const items = document.querySelectorAll('[data-stage]');
+  const num = document.querySelector('[data-stage-num]');
+  const name = document.querySelector('[data-stage-name]');
+  const bar = document.querySelector('[data-stage-bar]');
+  const rail = document.querySelector('[data-rail]');
+  let last = -1;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(Math.max(scrollY / max, 0), 1) : 0;
+    const i = Math.min(stages.length - 1, Math.max(0, Math.round((p * 0.9 + 0.1) * (stages.length - 1))));
+    if (bar) bar.style.transform = `scaleX(${p})`;
+    // Keep the rail out of the way of the hero title.
+    rail?.toggleAttribute('data-on', scrollY > innerHeight * 0.6);
+    if (i === last) return;
+    last = i;
+    items.forEach((el, k) => el.toggleAttribute('data-on', k === i));
+    if (num) num.textContent = String(i + 1).padStart(2, '0');
+    if (name) name.textContent = stages[i];
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+</script>

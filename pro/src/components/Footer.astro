@@ -1,0 +1,24 @@
+---
+import { getContent, profile, type Lang } from '@fa/shared';
+import { versionHref } from '@fa/shared/versions';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const immersive = versionHref('3d', Astro.props.lang);
+---
+
+<footer class="border-t border-line pb-[max(2rem,env(safe-area-inset-bottom))]">
+  <div class="wrap grid gap-y-4 pt-8 text-step--1 text-muted md:grid-cols-12 md:gap-x-8">
+    <p class="md:col-span-3">© {new Date().getFullYear()} {profile.name}</p>
+    <p class="md:col-span-5">{c.ui.colophon}</p>
+    <ul class="no-print flex flex-wrap gap-x-5 md:col-span-4 md:justify-end">
+      <li><a href={`mailto:${profile.email}`} class="link inline-flex min-h-11 items-center">E-mail</a></li>
+      <li><a href={profile.linkedin} target="_blank" rel="noopener" class="link inline-flex min-h-11 items-center">LinkedIn</a></li>
+      {profile.github && <li><a href={profile.github} target="_blank" rel="noopener" class="link inline-flex min-h-11 items-center">GitHub</a></li>}
+      <li><a href={immersive} data-version-switch="3d" class="link inline-flex min-h-11 items-center">{c.ui.otherVersion}</a></li>
+    </ul>
+    <p class="meta md:col-span-12">{c.ui.updated}</p>
+  </div>
+</footer>

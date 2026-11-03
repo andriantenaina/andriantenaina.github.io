@@ -1,0 +1,45 @@
+---
+import { getContent, type Lang } from '@fa/shared';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const s = c.skills;
+---
+
+<section id="skills" class="section" aria-labelledby="skills-title">
+  <div class="wrap">
+    <SectionHead id="skills" index="03" title={s.title} intro={s.intro} />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        s.groups.map((g, i) => (
+          <div data-reveal={(i % 3) * 0.06} class="card card-hover p-6">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="font-display text-step-1 font-semibold tracking-tight">{g.name}</h3>
+              <span class="meta num">{String(g.items.length).padStart(2, '0')}</span>
+            </div>
+            <ul class="mt-5 space-y-2.5">
+              {g.items.map((it) => (
+                <li class="flex items-center justify-between gap-3 border-b border-line pb-2.5 last:border-0 last:pb-0">
+                  <span>{it.name}</span>
+                  {it.years ? (
+                    <span class="flex items-center gap-2">
+                      <span class="flex gap-0.5" aria-hidden="true">
+                        {[1, 2, 3, 4].map((k) => (
+                          <span class:list={['h-1.5 w-3 rounded-full', k <= it.years! ? 'bg-accent' : 'bg-line']} />
+                        ))}
+                      </span>
+                      <span class="meta num">{s.yearsLabel(it.years)}</span>
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

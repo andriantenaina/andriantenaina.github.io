@@ -1,0 +1,39 @@
+---
+import { profile } from '@fa/shared';
+const site = Astro.site!;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{profile.name} · Data & DevOps Engineer</title>
+    <link rel="canonical" href={new URL('/en/', site).href} />
+    <link rel="alternate" hreflang="fr" href={new URL('/fr/', site).href} />
+    <link rel="alternate" hreflang="en" href={new URL('/en/', site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/en/', site).href} />
+    <meta name="robots" content="noindex, follow" />
+    <!-- Root URL only: pick the language from the browser and the version from the visitor's last choice. -->
+    <script is:inline>
+      var l = (navigator.languages || [navigator.language || 'en']).some(function (x) {
+        return /^fr/i.test(x);
+      })
+        ? 'fr'
+        : 'en';
+      var v = null;
+      try {
+        v = localStorage.getItem('version');
+      } catch (e) {}
+      location.replace((v === '3d' ? '/3d/' : '/') + l + '/');
+    </script>
+    <noscript><meta http-equiv="refresh" content="0; url=/en/" /></noscript>
+    <style>
+      body { background: #0b1120; color: #e8ecf4; font-family: system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; }
+      a { color: #4d86ff; margin: 0 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <p><a href="/fr/">Français</a> · <a href="/en/">English</a></p>
+  </body>
+</html>

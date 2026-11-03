@@ -1,0 +1,74 @@
+---
+import { getContent, type Lang } from '@fa/shared';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const a = c.about;
+const icons = [
+  'M12 3v18M3 12h18', // end-to-end
+  'M4 17l5-5 4 4 7-7', // production
+  'M5 5h14v4H5zM5 13h9v6H5z', // standards
+  'M12 2v4m0 12v4M4.9 4.9l2.8 2.8m8.6 8.6 2.8 2.8M2 12h4m12 0h4', // capacity
+];
+---
+
+<section id="about" class="section bg-surface-2/50" aria-labelledby="about-title">
+  <div class="wrap">
+    <SectionHead id="about" index="02" title={a.title} />
+
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-12">
+      <div data-reveal class="card p-6 sm:col-span-2 sm:p-8 lg:col-span-7 lg:row-span-2">
+        <div class="space-y-5">
+          {a.story.map((p, i) => <p class={i === 0 ? 'font-display text-step-2 leading-snug font-medium tracking-tight' : 'text-muted'}>{p}</p>)}
+        </div>
+      </div>
+
+      <div data-reveal="0.05" class="card p-6 sm:col-span-2 lg:col-span-5">
+        <p class="eyebrow">{a.lookingTitle}</p>
+        <ul class="mt-4 space-y-2.5">
+          {
+            a.looking.map((l) => (
+              <li class="flex gap-2.5">
+                <svg class="mt-[0.3em] size-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
+                  <path d="m5 12 5 5 9-10" />
+                </svg>
+                {l}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div data-reveal="0.1" class="card grid gap-6 p-6 sm:col-span-2 sm:grid-cols-2 lg:col-span-5">
+        <div>
+          <p class="eyebrow">{a.languagesTitle}</p>
+          <ul class="mt-4 space-y-2 text-step--1">
+            {a.languages.map((l) => <li><span class="font-medium">{l.name}</span><br /><span class="text-muted">{l.level}</span></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">{a.timezoneTitle}</p>
+          <p class="num mt-4 font-display text-step-3 leading-none font-semibold"><span data-clock>--:--</span></p>
+          <p class="mt-2 text-step--1 text-muted">{a.timezone}</p>
+        </div>
+      </div>
+
+      {
+        a.strengths.map((s, i) => (
+          <div data-reveal={0.05 * i} class="card card-hover p-6 lg:col-span-3">
+            <span class="grid size-10 place-items-center rounded-lg bg-accent/12 text-accent" aria-hidden="true">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d={icons[i]} />
+              </svg>
+            </span>
+            <p class="mt-4 font-semibold">{s.title}</p>
+            <p class="mt-1.5 text-step--1 text-muted">{s.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  index: number;
+}
+const { id, title, index } = Astro.props;
+---
+
+<!-- Opaque reading panel; on wide screens it leaves the left side to the 3D pipeline. -->
+<section id={id} aria-labelledby={`${id}-title`} class="relative">
+  <div class="panel lg:ml-auto lg:w-[min(64%,62rem)]">
+    <div class="px-[max(1.25rem,env(safe-area-inset-right))] py-[clamp(3.5rem,8vw,7rem)] sm:px-10 lg:pr-[max(3.5rem,env(safe-area-inset-right))] lg:pl-14">
+      <p class="meta num">{String(index).padStart(2, '0')}</p>
+      <h2 id={`${id}-title`} class="poster mt-3 text-step-3 leading-[0.9]">{title}</h2>
+      <div class="mt-10">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

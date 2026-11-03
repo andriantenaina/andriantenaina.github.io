@@ -1,0 +1,175 @@
+---
+import '../styles/global.css';
+import { getContent, profile, type Lang } from '@fa/shared';
+import { themeBootScript } from '@fa/shared/palettes';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+// Preload the two faces used above the fold (display + body sans), Latin subset only.
+import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import sansFont from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
+
+interface Props {
+  lang: Lang;
+  /** Path after the language prefix, e.g. '' or 'projects/observability/'. */
+  path?: string;
+  title?: string;
+  description?: string;
+  jsonLd?: object;
+}
+
+const { lang, path = '', title, description, jsonLd } = Astro.props;
+const c = getContent(lang);
+const site = Astro.site!;
+const pageTitle = title ? `${title} · ${profile.name}` : c.meta.title;
+const pageDesc = description ?? c.meta.description;
+const canonical = new URL(`/${lang}/${path}`, site).href;
+const alt = (l: Lang) => new URL(`/${l}/${path}`, site).href;
+const ogImage = new URL(`/og-${lang}.png`, site).href;
+const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC;
+const umamiId = import.meta.env.PUBLIC_UMAMI_ID;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <meta name="author" content={profile.name} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f8fc" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="fr" href={alt('fr')} />
+    <link rel="alternate" hreflang="en" href={alt('en')} />
+    <link rel="alternate" hreflang="x-default" href={alt('en')} />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={c.meta.ogAlt} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <!-- Theme + palette before first paint (saved choice, else device setting / cobalt). -->
+    <script is:inline set:html={`document.documentElement.classList.add('js');${themeBootScript}`} />
+    {umamiSrc && umamiId && <script defer src={umamiSrc} data-website-id={umamiId} />}
+  </head>
+  <body class="min-h-svh overflow-x-clip">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-3 focus:text-accent-fg">{c.ui.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+
+    <script>
+      import { animate, inView, stagger } from 'motion';
+      import { initThemeControls } from '@fa/shared/palettes';
+
+      const root = document.documentElement;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      initThemeControls();
+
+      // ---- Scroll animations ----
+      if (!reduced) {
+        inView(
+          '[data-reveal]',
+          (el) => {
+            const delay = Number((el as HTMLElement).dataset.reveal || 0);
+            animate(el, { opacity: [0, 1], transform: ['translateY(18px)', 'translateY(0px)'] }, { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] });
+          },
+          { margin: '0px 0px -8% 0px' },
+        );
+        inView(
+          '.split-words',
+          (el) => {
+            animate(el.querySelectorAll('.w > span'), { transform: ['translateY(105%)', 'translateY(0%)'] }, { duration: 0.7, delay: stagger(0.05), ease: [0.22, 1, 0.36, 1] });
+          },
+          { margin: '0px 0px -8% 0px' },
+        );
+      }
+
+      // Animated counters: [data-count] holds the target, text keeps prefix/suffix.
+      inView('[data-count]', (el) => {
+        const node = el as HTMLElement;
+        const target = Number(node.dataset.count);
+        const [pre, post] = (node.dataset.affix ?? '|').split('|');
+        if (reduced) return;
+        animate(0, target, { duration: 1.4, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => (node.textContent = `${pre}${Math.round(v)}${post}`) });
+      });
+
+      // ---- Mobile menu (disclosure pattern) ----
+      const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+      const menu = document.getElementById('mobile-menu');
+      const setMenu = (open: boolean, returnFocus = false) => {
+        if (!menuButton || !menu) return;
+        menuButton.setAttribute('aria-expanded', String(open));
+        menu.hidden = !open;
+        if (!open && returnFocus) menuButton.focus();
+      };
+      menuButton?.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+      menu?.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) setMenu(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') setMenu(false, true);
+      });
+      matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && setMenu(false));
+
+      // ---- Current section in the nav ----
+      const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav]');
+      if (links.length) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              links.forEach((l) => (l.dataset.nav === entry.target.id ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
+            }
+          },
+          { rootMargin: '-45% 0px -50% 0px' },
+        );
+        new Set([...links].map((l) => l.dataset.nav)).forEach((id) => {
+          const el = id && document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+      }
+
+      // ---- Local time in Antananarivo ----
+      const clocks = document.querySelectorAll('[data-clock]');
+      const fmt = new Intl.DateTimeFormat(root.lang, { hour: '2-digit', minute: '2-digit', timeZone: 'Indian/Antananarivo' });
+      const tick = () => clocks.forEach((el) => (el.textContent = fmt.format(new Date())));
+      if (clocks.length) {
+        tick();
+        setInterval(tick, 30_000);
+      }
+
+      // ---- Copy e-mail ----
+      document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) =>
+        b.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(b.dataset.copy!);
+            const label = b.textContent;
+            b.textContent = b.dataset.copied ?? label;
+            setTimeout(() => (b.textContent = label), 1800);
+          } catch {}
+        }),
+      );
+    </script>
+  </body>
+</html>

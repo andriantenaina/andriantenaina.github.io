@@ -1,0 +1,371 @@
+import type { Content } from './types';
+import { dataPlatformDiagram, devopsDiagram, observabilityDiagram } from './diagrams';
+
+export const fr: Content = {
+  lang: 'fr',
+  meta: {
+    title: 'Fanilo Andriantenaina · Data & DevOps Engineer',
+    description:
+      "Data & DevOps Engineer, 4+ ans d’expérience : data warehouse temps réel (StarRocks, Debezium, Kafka, Spark, Airflow), observabilité (ELK, Grafana), Docker et Kubernetes. Disponible immédiatement, ouvert à la relocalisation.",
+    ogAlt: 'Fanilo Andriantenaina, Data & DevOps Engineer',
+  },
+  nav: { work: 'Réalisations', about: 'À propos', skills: 'Compétences', journey: 'Parcours', contact: 'Contact' },
+  hero: {
+    role: 'Data & DevOps Engineer',
+    headline: 'Je construis des plateformes data qui tournent en production.',
+    headlinePrefix: 'Je construis des plateformes',
+    rotating: ['data en temps réel.', 'd’observabilité.', 'sur Kubernetes.', 'qui tournent en prod.'],
+    heroStats: [0, 1, 2, 5],
+    diagramHint: 'Survolez ou sélectionnez un composant',
+    intro:
+      "Depuis 2022 chez Be ys Outsourcing Services, à Antananarivo, je conçois et j’exploite l’entrepôt de données de l’entreprise (capture de changements Debezium et Kafka, StarRocks, Spark, Airflow) et sa plateforme d’observabilité ELK.",
+    availableLabel: 'Disponibilité',
+    available: 'Disponible immédiatement, ouvert à la relocalisation au Canada, en Belgique ou en France, ou au télétravail.',
+    basedIn: 'Basé à',
+    location: 'Antananarivo, Madagascar',
+    localTime: 'Heure locale',
+    languages: 'Français, anglais (C1) · malgache',
+    ctaEmail: 'Écrivez-moi',
+  },
+  briefTitle: 'En bref',
+  stats: [
+    { value: '4 ans', label: 'à concevoir et exploiter des plateformes en production' },
+    { value: '10+', label: 'rapports et tableaux de bord KPI qui se mettent à jour seuls' },
+    { value: '1 jour+', label: 'de reporting manuel économisé chaque semaine' },
+    { value: 'minutes', label: "pour qu’une modification en base source arrive dans l’entrepôt (2 à 5 bases en CDC)" },
+    { value: '10+', label: 'applications et serveurs dont les logs sont centralisés dans ELK' },
+    { value: 'h → min', label: "temps de détection d’un incident, avant et après la plateforme" },
+  ],
+  work: {
+    title: 'Réalisations',
+    intro:
+      "Trois plateformes que j’ai conçues et que j’exploite au quotidien. Entré en stage, j’ai porté mon projet de fin d’études jusqu’à en faire des outils centraux de l’entreprise.",
+    readMore: "Lire l’étude de cas",
+    back: 'Retour aux réalisations',
+  },
+  labels: {
+    problem: 'Le problème',
+    role: 'Mon rôle',
+    approach: 'Approche',
+    architecture: 'Architecture',
+    results: 'Résultats',
+    stack: 'Stack',
+    nextCase: 'Étude de cas suivante',
+  },
+  caseStudies: [
+    {
+      slug: 'data-platform',
+      kicker: 'Data Engineering · Temps réel',
+      title: 'Plateforme data & entrepôt analytique centralisé',
+      summary:
+        'Un data warehouse StarRocks alimenté en continu par capture de changements depuis PostgreSQL et MySQL, complété par des pipelines batch Spark orchestrés par Airflow. Il alimente plus de 10 rapports et tableaux de bord KPI.',
+      highlights: ['Données fraîches en quelques minutes', '10+ dashboards automatisés', '1 jour+ de reporting manuel économisé / semaine'],
+      problem:
+        "Les données des applications métier étaient réparties dans plusieurs bases PostgreSQL et MySQL. Les rapports étaient produits à la main, ce qui mobilisait plus d’une journée de travail chaque semaine.",
+      role:
+        "Conception de bout en bout, mise en production et exploitation. Le projet a été mon projet de fin d’études du Master MBDS (Université Côte d’Azur), puis est devenu une plateforme centrale de l’entreprise.",
+      approach: [
+        'Capture de changements (CDC) en temps réel avec Debezium et Kafka sur 2 à 5 bases sources PostgreSQL et MySQL.',
+        "Entrepôt analytique centralisé sur StarRocks, choisi pour les requêtes analytiques rapides sur des données mises à jour en continu.",
+        'Pipelines ETL batch en Python et Apache Spark, planifiés et supervisés avec Apache Airflow.',
+        'Couche de restitution : rapports et tableaux de bord KPI dans Power BI et Apache Superset.',
+      ],
+      results: [
+        "Données disponibles pour l’analyse quelques minutes après leur modification dans les bases sources.",
+        "Plus de 10 rapports et tableaux de bord KPI automatisés pour les équipes métier et opérationnelles, mis à jour sans intervention manuelle.",
+        "Plus d’une journée de reporting manuel économisée chaque semaine.",
+      ],
+      stack: ['StarRocks', 'Debezium', 'Kafka', 'Apache Spark', 'Apache Airflow', 'Python', 'SQL', 'PostgreSQL', 'MySQL', 'Power BI', 'Apache Superset'],
+      diagram: dataPlatformDiagram({
+        batch: 'ETL batch',
+        dashboards: '10+ dashboards',
+        dwh: 'entrepôt',
+        desc: {
+          pg: 'Base source des applications métier, répliquée en continu par capture de changements.',
+          mysql: 'Base source des applications métier, répliquée en continu par capture de changements.',
+          debezium: 'Lit les journaux de transactions des bases sources et publie chaque modification (CDC).',
+          kafka: 'Transporte les événements de changement vers l’entrepôt.',
+          spark: 'Pipelines ETL batch en Python et Spark, planifiés et supervisés par Airflow.',
+          starrocks: 'Entrepôt analytique centralisé, données disponibles en quelques minutes.',
+          bi: 'Plus de 10 rapports et tableaux de bord KPI mis à jour sans intervention manuelle.',
+        },
+      }),
+      diagramAlt:
+        "Schéma : PostgreSQL et MySQL vers Debezium (CDC), puis Kafka, puis StarRocks ; PostgreSQL alimente aussi les pipelines batch Spark et Airflow vers StarRocks ; StarRocks alimente Power BI et Superset.",
+    },
+    {
+      slug: 'observability',
+      kicker: 'Observabilité · Gouvernance',
+      title: "Plateforme d’observabilité à l’échelle de l’entreprise",
+      summary:
+        "Une politique de journalisation commune et une stack ELK centralisée qui collecte les logs de plus de 10 applications et serveurs, avec tableaux de bord Kibana, alertes automatiques et supervision Grafana.",
+      highlights: ["Détection d’incident : d’heures à minutes", '10+ applications et serveurs', 'Politique de logs pour toute l’entreprise'],
+      problem:
+        "Sans format commun ni centralisation des logs, un incident pouvait mettre des heures à être détecté et diagnostiqué.",
+      role:
+        "Rédaction et déploiement de la politique de journalisation, conception et mise en place de la plateforme, puis son exploitation. Cette plateforme faisait aussi partie de mon projet de fin d’études.",
+      approach: [
+        "Politique de journalisation pour toutes les équipes : format des logs, niveaux et rétention.",
+        'Collecte centralisée avec Logstash et indexation dans Elasticsearch pour plus de 10 applications et serveurs.',
+        'Tableaux de bord Kibana et alertes automatiques sur les erreurs et anomalies.',
+        "Supervision de l’infrastructure avec Grafana.",
+        'Services conteneurisés avec Docker et déployés sur Kubernetes.',
+      ],
+      results: [
+        "Incidents détectés en quelques minutes au lieu de plusieurs heures.",
+        'Diagnostic plus rapide grâce à des logs homogènes et centralisés.',
+        "Un standard de journalisation partagé par toutes les équipes.",
+      ],
+      stack: ['Elasticsearch', 'Logstash', 'Kibana', 'Grafana', 'Docker', 'Kubernetes'],
+      diagram: observabilityDiagram({
+        apps: '10+ applis & serveurs',
+        policy: 'Politique de logs',
+        dashboards: 'dashboards',
+        alerts: 'Alertes',
+        monitoring: 'supervision',
+        desc: {
+          policy: 'Politique de journalisation commune : format des logs, niveaux et rétention.',
+          apps: 'Plus de 10 applications et serveurs envoient leurs logs à la plateforme.',
+          logstash: 'Collecte et normalise les logs avant indexation.',
+          es: 'Indexe les logs pour la recherche et l’analyse.',
+          kibana: 'Tableaux de bord et alertes automatiques sur les erreurs et anomalies.',
+          grafana: 'Supervision de l’infrastructure.',
+          alerts: 'Les incidents sont détectés en quelques minutes au lieu de plusieurs heures.',
+        },
+      }),
+      diagramAlt:
+        "Schéma : la politique de logs et plus de 10 applications et serveurs alimentent Logstash, puis Elasticsearch, qui alimente Kibana et Grafana, qui déclenchent les alertes.",
+    },
+    {
+      slug: 'devops',
+      kicker: 'DevOps · Logiciel',
+      title: 'Industrialisation DevOps & application de contrôle qualité',
+      summary:
+        "Conteneurisation des services data et de supervision avec Docker, déploiement sur Kubernetes et pipelines CI/CD. En parallèle, développement d’une application C# / .NET de contrôle qualité de production.",
+      highlights: ['Docker & Kubernetes', 'Builds et déploiements automatisés', 'Application métier C# / .NET'],
+      problem:
+        "Les services data et de supervision devaient être déployés et mis à jour de façon fiable et reproductible. Les équipes de production avaient besoin d’un outil pour suivre la qualité et les performances.",
+      role: "Conception et mise en place de la chaîne de déploiement ; développement de l’application de contrôle qualité.",
+      approach: [
+        'Conteneurisation des services data et de supervision avec Docker.',
+        'Déploiement et exploitation sur Kubernetes.',
+        'Pipelines CI/CD pour automatiser les builds et les déploiements.',
+        "Application desktop C# / .NET de contrôle qualité de production : suivi des performances et de la qualité.",
+      ],
+      results: [
+        'Builds et déploiements automatisés.',
+        'Services data et supervision déployés de façon reproductible sur Kubernetes.',
+        'Un outil de suivi de la qualité en production utilisé par les équipes.',
+      ],
+      stack: ['Docker', 'Kubernetes', 'CI/CD', 'GitLab', 'Git', 'Linux', 'C#', '.NET'],
+      diagram: devopsDiagram({
+        images: 'images',
+        data: 'Services data',
+        monitoring: 'Supervision',
+        desc: {
+          git: 'Code source et configuration versionnés dans GitLab.',
+          ci: 'Pipelines CI/CD qui automatisent builds et déploiements.',
+          docker: 'Services data et de supervision conteneurisés.',
+          k8s: 'Déploiement et exploitation des services sur Kubernetes.',
+          data: 'Services de la plateforme data : Airflow, Spark.',
+          mon: 'Services de supervision : ELK, Grafana.',
+        },
+      }),
+      diagramAlt:
+        'Schéma : Git et GitLab vers CI/CD, puis images Docker, puis Kubernetes, qui exécute les services data et la supervision.',
+    },
+  ],
+  about: {
+    title: 'À propos',
+    story: [
+      "Data & DevOps Engineer avec plus de 4 ans d’expérience, je construis des plateformes data et d’observabilité utilisées au quotidien par toute l’entreprise.",
+      "Entré chez Be ys Outsourcing Services Madagascar comme stagiaire développeur C# / .NET en juin 2022, j’ai été embauché à temps plein en novembre 2022. J’ai obtenu deux masters (génie logiciel, puis MBDS Big Data à l’Université Côte d’Azur) tout en travaillant à temps plein.",
+      "Mon approche : des solutions fiables, documentées et pensées pour être reprises par les équipes.",
+    ],
+    strengths: [
+      { title: 'Autonomie de A à Z', text: "D’un projet de fin d’études à deux plateformes centrales, en production." },
+      { title: 'Vision production', text: "Je conçois, déploie et exploite ce que je construis : supervision, alertes, maintenance." },
+      { title: 'Standards & gouvernance', text: 'Politique de journalisation commune à toutes les équipes.' },
+      { title: 'Capacité de travail', text: 'Deux masters obtenus en parallèle d’un poste à temps plein.' },
+    ],
+    lookingTitle: 'Ce que je recherche',
+    looking: [
+      'Data Engineer · Data Platform · DevOps / SRE orienté data',
+      'Canada (Québec, Montréal), Belgique, France : relocalisation',
+      'Télétravail',
+      'Disponible immédiatement',
+    ],
+    timezoneTitle: 'Fuseau horaire',
+    timezone: "UTC+3 : 1 à 2 h d’avance sur Paris et Bruxelles, journée de travail facile à aligner avec l’Europe.",
+    languagesTitle: 'Langues',
+    languages: [
+      { name: 'Français', level: 'Courant professionnel (C1)' },
+      { name: 'Anglais', level: 'Courant professionnel (C1)' },
+      { name: 'Malgache', level: 'Langue maternelle' },
+    ],
+  },
+  skills: {
+    title: 'Compétences',
+    intro: 'Les outils que j’utilise en production, regroupés par domaine.',
+    yearsLabel: (n) => `${n} an${n > 1 ? 's' : ''}`,
+    groups: [
+      {
+        name: 'Data & streaming',
+        items: [
+          { name: 'Apache Spark', years: 4 },
+          { name: 'Apache Airflow', years: 4 },
+          { name: 'Debezium (CDC)' },
+          { name: 'Kafka' },
+          { name: 'dbt', years: 2 },
+        ],
+      },
+      {
+        name: 'Entrepôts & bases de données',
+        items: [
+          { name: 'StarRocks' },
+          { name: 'PostgreSQL' },
+          { name: 'MySQL' },
+          { name: 'SQL Server', years: 2 },
+          { name: 'MongoDB', years: 2 },
+        ],
+      },
+      {
+        name: 'BI & reporting',
+        items: [{ name: 'Power BI' }, { name: 'Apache Superset' }, { name: 'Grafana' }, { name: 'Kibana' }],
+      },
+      {
+        name: 'Observabilité',
+        items: [{ name: 'Elasticsearch' }, { name: 'Logstash' }, { name: 'Kibana' }, { name: 'Grafana' }, { name: 'Alerting' }],
+      },
+      {
+        name: 'DevOps & IaC',
+        items: [
+          { name: 'Docker', years: 4 },
+          { name: 'Kubernetes', years: 4 },
+          { name: 'GitLab CI/CD', years: 4 },
+          { name: 'Terraform', years: 2 },
+          { name: 'Linux' },
+          { name: 'Git' },
+        ],
+      },
+      {
+        name: 'Langages',
+        items: [{ name: 'Python', years: 4 }, { name: 'SQL', years: 4 }, { name: 'C# / .NET' }, { name: 'PHP' }],
+      },
+    ],
+  },
+  journey: {
+    title: 'Parcours',
+    experienceTitle: 'Expérience',
+    educationTitle: 'Formation',
+    jobs: [
+      {
+        title: 'Data & DevOps Engineer',
+        org: 'Be ys Outsourcing Services Madagascar',
+        place: 'Antananarivo',
+        period: 'Nov. 2022 – aujourd’hui',
+        type: 'Temps plein',
+        points: [
+          'Data warehouse StarRocks, CDC Debezium / Kafka, ETL Spark orchestré par Airflow',
+          '10+ rapports et dashboards KPI (Power BI, Superset)',
+          "Politique de journalisation et stack ELK pour 10+ applications et serveurs",
+          'Docker, Kubernetes, CI/CD ; application C# / .NET de contrôle qualité',
+        ],
+      },
+      {
+        title: 'Software Engineer (stage)',
+        org: 'Be ys Outsourcing Services Madagascar',
+        place: 'Antananarivo',
+        period: 'Juin 2022 – nov. 2022',
+        type: 'Stage',
+        points: ['Développement C# / .NET d’applications métier internes', 'Embauché à temps plein à la fin du stage'],
+      },
+      {
+        title: 'Développeur Odoo (stage)',
+        org: 'PSI Madagascar',
+        place: 'Madagascar · hybride',
+        period: 'Sept. 2021 – mars 2022',
+        type: 'Stage',
+        points: ['Module de gestion de flotte dans Odoo (Python, PostgreSQL)', 'Suivi des trajets par GPS, maintenance et activité des véhicules'],
+      },
+      {
+        title: 'Développeur web Drupal / PHP (stage)',
+        org: 'Esokia',
+        place: 'Antananarivo',
+        period: 'Juin 2021 – sept. 2021',
+        type: 'Stage',
+        points: ['Fonctionnalités de sites Drupal en PHP', 'Travail en équipe avec Git'],
+      },
+    ],
+    education: [
+      {
+        degree: 'Master 2 MBDS : Mobiquité, Big Data et Intégration de Systèmes',
+        school: "Université Côte d’Azur (France)",
+        period: '2023 – 2024',
+        note: "Projet de fin d’études : data warehouse et plateforme ELK mis en production dans l’entreprise.",
+      },
+      { degree: 'Master of Science : Génie logiciel', school: 'IT University (Madagascar)', period: '2022 – 2023' },
+      { degree: 'Licence : Développement logiciel', school: 'IT University (Madagascar)', period: '2018 – 2022' },
+    ],
+  },
+  otherProjects: {
+    title: 'Autres projets',
+    items: [
+      {
+        title: 'Module de gestion de flotte Odoo',
+        org: 'PSI Madagascar',
+        text: 'Module Odoo avec suivi des trajets par GPS, planification de la maintenance et gestion de l’activité des véhicules.',
+        stack: ['Odoo', 'Python', 'PostgreSQL'],
+      },
+      {
+        title: 'Application de contrôle qualité de production',
+        org: 'Be ys Outsourcing Services',
+        text: 'Application desktop pour le suivi des performances et de la qualité des équipes de production.',
+        stack: ['C#', '.NET'],
+      },
+    ],
+  },
+  labs: {
+    title: 'Open source & labs',
+    intro: 'Projets publics sur GitHub.',
+    items: [],
+  },
+  contact: {
+    title: 'Contact',
+    intro:
+      'Vous recrutez un Data Engineer ou un profil DevOps orienté data ? Le plus simple est de m’écrire. Je réponds vite et je peux démarrer immédiatement.',
+    name: 'Nom',
+    email: 'E-mail',
+    company: 'Entreprise (facultatif)',
+    message: 'Message',
+    send: 'Envoyer',
+    sending: 'Envoi…',
+    success: 'Merci, votre message est bien parti. Je vous réponds rapidement.',
+    error: "L’envoi a échoué. Écrivez-moi directement par e-mail.",
+    or: 'ou directement',
+    formTitle: 'Ou laissez un message',
+    copy: 'Copier',
+    copied: 'Copié',
+    cvTitle: 'CV',
+    view: 'Voir',
+    download: 'Télécharger',
+    cvFr: 'Français',
+    cvEn: 'English',
+  },
+  ui: {
+    otherLangLabel: 'Switch to English',
+    theme: 'Thème sombre',
+    palette: 'Couleurs',
+    menu: 'Menu',
+    close: 'Fermer',
+    skip: 'Aller au contenu',
+    otherVersion: 'Version 3D',
+    classicVersion: 'Version classique',
+    versionHint: 'Le même contenu, en version immersive',
+    footer: 'Conçu et développé par Fanilo Andriantenaina.',
+    colophon: 'Composé en Bricolage Grotesque et IBM Plex. Site statique Astro, sans cookie.',
+    updated: 'Mis à jour en novembre 2026',
+    stages: ['Sources', 'CDC', 'Streaming', 'Batch', 'Entrepôt', 'Restitution', 'Observabilité', 'Exploitation'],
+    stagesLabel: 'Étapes du pipeline',
+  },
+};

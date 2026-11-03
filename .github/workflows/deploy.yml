@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://andriantenaina.github.io
+      PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # CV PDFs and share images are generated locally (npm run assets) and committed, so no Chrome step here.
+      - run: npm run build -w pro && npm run build -w creative && node shared/scripts/merge-sites.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pro/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

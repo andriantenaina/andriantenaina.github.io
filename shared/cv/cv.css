@@ -1,0 +1,29 @@
+@page { size: A4; margin: 13mm 15mm; }
+* { box-sizing: border-box; }
+body { font-family: "Segoe UI", Calibri, Arial, sans-serif; font-size: 10.2pt; line-height: 1.38; color: #0b1120; margin: 0; }
+h1 { font-size: 23pt; margin: 0; letter-spacing: .3px; color: #0b1120; }
+.title { font-size: 12.5pt; font-weight: 600; color: #2456e6; margin: 2px 0 6px; }
+.contact { font-size: 9.5pt; color: #444; } .contact span { white-space: nowrap; }
+.contact span + span::before { content: " · "; color: #999; }
+.mobility { font-size: 9.8pt; margin-top: 3px; color: #0b1120; }
+h2 { font-size: 11pt; text-transform: uppercase; letter-spacing: 1px; color: #0b1120; border-bottom: 1.5px solid #2456e6; padding-bottom: 2px; margin: 13px 0 6px; }
+p { margin: 0 0 5px; }
+.keys { display: flex; flex-wrap: wrap; gap: 4px 5px; margin-top: 2px; }
+.keys span { background: #e9effd; color: #0b1120; border-radius: 3px; padding: 1px 7px; font-size: 9.3pt; font-weight: 600; }
+.job { margin-bottom: 8px; }
+.job-head { display: flex; justify-content: space-between; align-items: baseline; }
+.job-head b { font-size: 11pt; }
+.date { color: #555; font-size: 9.8pt; white-space: nowrap; }
+.org { color: #2456e6; font-weight: 600; font-size: 10.2pt; }
+.note { color: #555; font-size: 9.6pt; font-style: italic; }
+.proj { margin-top: 7px; padding-left: 9px; border-left: 2.5px solid #cbd9fb; page-break-inside: avoid; }
+.proj-title { font-weight: 700; color: #0b1120; }
+.proj .stack { font-size: 9.4pt; color: #555; margin-top: 2px; }
+ul { margin: 3px 0 0; padding-left: 16px; }
+li { margin: 1.5px 0; }
+.lbl { font-weight: 600; color: #0b1120; }
+.skills { display: grid; grid-template-columns: 150px 1fr; gap: 4px 10px; }
+.skills div:nth-child(odd) { font-weight: 600; color: #0b1120; }
+.two { display: grid; grid-template-columns: 1.25fr 1fr; gap: 0 22px; }
+.edu { margin-bottom: 6px; }
+.pb { page-break-before: always; }

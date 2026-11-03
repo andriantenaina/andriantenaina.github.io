@@ -1,0 +1,26 @@
+---
+import { LANGS, type Lang } from '@fa/shared';
+import { personJsonLd } from '@fa/shared/seo';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Work from '../../components/Work.astro';
+import About from '../../components/About.astro';
+import Skills from '../../components/Skills.astro';
+import Journey from '../../components/Journey.astro';
+import Contact from '../../components/Contact.astro';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} jsonLd={personJsonLd(lang, Astro.site!.href)}>
+  <Hero lang={lang} />
+  <Work lang={lang} />
+  <About lang={lang} />
+  <Skills lang={lang} />
+  <Journey lang={lang} />
+  <Contact lang={lang} />
+</Layout>

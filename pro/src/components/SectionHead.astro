@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: string;
+  index: string;
+  title: string;
+  intro?: string;
+}
+const { id, index, title, intro } = Astro.props;
+const words = title.split(' ');
+---
+
+<div class="max-w-3xl">
+  <p class="eyebrow" data-reveal>{index}</p>
+  <h2 id={`${id}-title`} class="split-words mt-4 font-display text-step-4 leading-[1.05] font-semibold tracking-[-0.03em]">
+    {
+      words.map((w, i) => (
+        <>
+          <span class="w">
+            <span>{w}</span>
+          </span>
+          {i < words.length - 1 && ' '}
+        </>
+      ))
+    }
+  </h2>
+  {intro && <p data-reveal="0.1" class="mt-5 text-step-1 leading-normal text-muted">{intro}</p>}
+</div>

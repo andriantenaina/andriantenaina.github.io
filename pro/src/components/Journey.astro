@@ -1,0 +1,124 @@
+---
+import { getContent, type Lang } from '@fa/shared';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const j = c.journey;
+---
+
+<section id="journey" class="section bg-surface-2/50" aria-labelledby="journey-title">
+  <div class="wrap">
+    <SectionHead id="journey" index="04" title={j.title} />
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <h3 class="eyebrow">{j.experienceTitle}</h3>
+        <ol class="relative mt-6 space-y-5 pl-8" data-timeline>
+          <span class="absolute top-2 bottom-2 left-[7px] w-px bg-line" aria-hidden="true"></span>
+          <span data-timeline-fill class="absolute top-2 left-[7px] h-[calc(100%-1rem)] w-px origin-top scale-y-0 bg-accent" aria-hidden="true"></span>
+          {
+            j.jobs.map((job, i) => (
+              <li data-reveal class="relative">
+                <span
+                  class:list={[
+                    'absolute top-6 -left-8 grid size-[15px] place-items-center rounded-full border-2 bg-bg',
+                    i === 0 ? 'border-accent' : 'border-line',
+                  ]}
+                  aria-hidden="true"
+                >
+                  {i === 0 && <span class="size-1.5 rounded-full bg-accent" />}
+                </span>
+                <div class="card card-hover p-5 sm:p-6">
+                  <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <p class="font-display text-step-1 font-semibold tracking-tight">{job.title}</p>
+                    <p class="meta num">{job.period}</p>
+                  </div>
+                  <p class="mt-1 text-step--1">
+                    <span class="font-medium text-accent">{job.org}</span> <span class="text-muted">· {job.place} · {job.type}</span>
+                  </p>
+                  <ul class="mt-4 space-y-1.5 text-step--1 text-muted">
+                    {job.points.map((p) => (
+                      <li class="flex gap-2.5">
+                        <span class="mt-[0.6em] size-1 shrink-0 rounded-full bg-muted" aria-hidden="true" />
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="space-y-10 lg:col-span-5">
+        <div>
+          <h3 class="eyebrow">{j.educationTitle}</h3>
+          <ol class="mt-6 space-y-4">
+            {
+              j.education.map((e) => (
+                <li data-reveal class="card p-5">
+                  <p class="meta num">{e.period}</p>
+                  <p class="mt-1.5 font-semibold leading-snug">{e.degree}</p>
+                  <p class="text-step--1 text-accent">{e.school}</p>
+                  {e.note && <p class="mt-2 text-step--1 text-muted">{e.note}</p>}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+        <div>
+          <h3 class="eyebrow">{c.otherProjects.title}</h3>
+          <ul class="mt-6 space-y-4">
+            {
+              c.otherProjects.items.map((p) => (
+                <li data-reveal class="card p-5">
+                  <p class="font-semibold">{p.title}</p>
+                  <p class="text-step--1 text-accent">{p.org}</p>
+                  <p class="mt-2 text-step--1 text-muted">{p.text}</p>
+                  <div class="mt-3 flex flex-wrap gap-1.5">
+                    {p.stack.map((s) => (
+                      <span class="chip">{s}</span>
+                    ))}
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        {
+          c.labs.items.length > 0 && (
+            <div>
+              <h3 class="eyebrow">{c.labs.title}</h3>
+              <ul class="mt-6 space-y-4">
+                {c.labs.items.map((p) => (
+                  <li class="card p-5">
+                    <a href={p.url} target="_blank" rel="noopener" class="link font-semibold">
+                      {p.name}
+                    </a>
+                    <p class="mt-2 text-step--1 text-muted">{p.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { scroll, animate } from 'motion';
+  // Timeline line fills in as the section scrolls past.
+  const fill = document.querySelector<HTMLElement>('[data-timeline-fill]');
+  const list = document.querySelector<HTMLElement>('[data-timeline]');
+  if (fill && list && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    scroll(animate(fill, { transform: ['scaleY(0)', 'scaleY(1)'] }, { ease: 'linear' }), { target: list, offset: ['start 75%', 'end 60%'] });
+  } else if (fill) {
+    fill.style.transform = 'scaleY(1)';
+  }
+</script>

@@ -1,0 +1,68 @@
+---
+import { getContent, profile, type Lang } from '@fa/shared';
+import Panel from './Panel.astro';
+
+interface Props {
+  lang: Lang;
+}
+const c = getContent(Astro.props.lang);
+const k = c.contact;
+const cvs = [
+  { label: k.cvFr, href: `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}${profile.cv.fr.slice(1)}`, lang: 'fr' },
+  { label: k.cvEn, href: `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}${profile.cv.en.slice(1)}`, lang: 'en' },
+];
+---
+
+<Panel id="contact" title={k.title} index={6}>
+  <p class="max-w-[52ch] text-step-1 leading-normal text-muted">{k.intro}</p>
+
+  <div class="mt-8 flex flex-wrap items-baseline gap-x-5 gap-y-2">
+    <a href={`mailto:${profile.email}`} class="link condensed text-[clamp(1.3rem,0.9rem+2.2vw,2.4rem)] leading-tight break-all">{profile.email}</a>
+    <button type="button" data-copy={profile.email} data-copied={k.copied} class="meta no-print inline-flex min-h-11 items-center hover:text-fg hover:underline">{k.copy}</button>
+  </div>
+
+  <dl class="mt-10 grid max-w-xl gap-y-4 text-step--1 sm:grid-cols-[8rem_1fr]">
+    <dt class="meta">{k.cvTitle}</dt>
+    <dd>
+      <ul class="space-y-1">
+        {
+          cvs.map((cv) => (
+            <li class="flex flex-wrap gap-x-4">
+              <span class="w-16">{cv.label}</span>
+              <a href={cv.href} target="_blank" rel="noopener" hreflang={cv.lang} class="link inline-flex min-h-11 items-center">{k.view}</a>
+              <a href={cv.href} download hreflang={cv.lang} class="link inline-flex min-h-11 items-center">{k.download}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </dd>
+    <dt class="meta">LinkedIn</dt>
+    <dd><a href={profile.linkedin} target="_blank" rel="noopener" data-raw class="link inline-flex min-h-11 items-center">linkedin.com/in/fanilo-andriantenaina</a></dd>
+  </dl>
+
+  <form data-contact data-sending={k.sending} data-success={k.success} data-error={k.error} class="mt-14 grid max-w-2xl gap-5 border-t border-line pt-8" aria-labelledby="form-title">
+    <h3 id="form-title" class="condensed text-step-2">{k.formTitle}</h3>
+    <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+    <div class="grid gap-5 sm:grid-cols-2">
+      <label class="grid gap-1.5 text-step--1">{k.name}<input name="name" required autocomplete="name" class="field" /></label>
+      <label class="grid gap-1.5 text-step--1">{k.email}<input name="email" type="email" required autocomplete="email" inputmode="email" class="field" /></label>
+    </div>
+    <label class="grid gap-1.5 text-step--1">{k.company}<input name="company" autocomplete="organization" class="field" /></label>
+    <label class="grid gap-1.5 text-step--1">{k.message}<textarea name="message" required rows="5" class="field resize-y"></textarea></label>
+    <div class="flex flex-wrap items-center gap-4">
+      <button type="submit" class="btn disabled:opacity-60">{k.send}</button>
+      <p data-status role="status" aria-live="polite" class="text-step--1 data-[state=error]:text-accent"></p>
+    </div>
+  </form>
+
+  <footer class="mt-20 grid gap-2 border-t border-line pt-6 text-step--1 text-muted">
+    <p>© {new Date().getFullYear()} {profile.name}. {c.ui.footer}</p>
+    <p class="meta">{c.ui.updated} · Astro, Three.js</p>
+  </footer>
+</Panel>
+
+<script>
+  import { initContactForm } from '@fa/shared/contact';
+  import { profile } from '@fa/shared';
+  initContactForm(import.meta.env.PUBLIC_WEB3FORMS_KEY, profile.email);
+</script>

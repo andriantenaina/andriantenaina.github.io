@@ -1,0 +1,62 @@
+---
+import { getContent, type Lang } from '@fa/shared';
+import SectionHead from './SectionHead.astro';
+import Diagram from './Diagram.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = getContent(lang);
+---
+
+<section id="work" class="section" aria-labelledby="work-title">
+  <div class="wrap">
+    <SectionHead id="work" index="01" title={c.work.title} intro={c.work.intro} />
+
+    <ul class="mt-14 grid gap-5 lg:grid-cols-2">
+      {
+        c.caseStudies.map((cs, i) => (
+          <li data-reveal={(i % 2) * 0.08} class:list={[i === 0 && 'lg:col-span-2']}>
+            <a
+              href={`/${lang}/projects/${cs.slug}/`}
+              class:list={['card card-hover group flex h-full flex-col overflow-hidden', i === 0 && 'lg:flex-row-reverse']}
+            >
+              <div class:list={['relative border-b border-line bg-surface-2 p-4 sm:p-6', i === 0 ? 'lg:w-[58%] lg:border-b-0 lg:border-l' : '']}>
+                <div class="pointer-events-none">
+                  <Diagram diagram={cs.diagram} alt={cs.diagramAlt} preview />
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col p-6 sm:p-8">
+                <p class="eyebrow">{String(i + 1).padStart(2, '0')} · {cs.kicker}</p>
+                <h3 class="mt-4 font-display text-step-2 leading-tight font-semibold tracking-tight">{cs.title}</h3>
+                <p class="mt-3 text-muted">{cs.summary}</p>
+                <ul class="mt-5 space-y-2 text-step--1">
+                  {cs.highlights.map((hl) => (
+                    <li class="flex gap-2.5">
+                      <svg class="mt-[0.3em] size-4 shrink-0 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
+                        <path d="m5 12 5 5 9-10" />
+                      </svg>
+                      {hl}
+                    </li>
+                  ))}
+                </ul>
+                <div class="mt-6 flex flex-wrap gap-1.5">
+                  {cs.stack.slice(0, 6).map((s) => (
+                    <span class="chip">{s}</span>
+                  ))}
+                </div>
+                <span class="mt-auto inline-flex items-center gap-2 pt-7 font-medium text-accent">
+                  {c.work.readMore}
+                  <svg class="size-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M5 12h14m-6-6 6 6-6 6" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

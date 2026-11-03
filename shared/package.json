@@ -1,0 +1,14 @@
+{
+  "name": "@fa/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./content/index.ts",
+    "./seo": "./seo.ts",
+    "./contact": "./contact.ts",
+    "./palettes": "./palettes.ts",
+    "./versions": "./versions.ts",
+    "./palettes.css": "./styles/palettes.css"
+  }
+}

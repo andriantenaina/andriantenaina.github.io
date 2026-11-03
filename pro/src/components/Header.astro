@@ -1,0 +1,130 @@
+---
+import { getContent, LANGS, type Lang } from '@fa/shared';
+import { versionHref } from '@fa/shared/versions';
+import PaletteSwitcher from './PaletteSwitcher.astro';
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+const { lang, path } = Astro.props;
+const c = getContent(lang);
+const links = (['work', 'about', 'skills', 'journey', 'contact'] as const).map((id) => ({ id, label: c.nav[id] }));
+const immersive = versionHref('3d', lang);
+const cube =
+  'M12 2.5 3.5 7v10l8.5 4.5 8.5-4.5V7L12 2.5ZM3.5 7 12 11.5 20.5 7M12 11.5v10';
+const navLink =
+  'relative inline-flex min-h-11 items-center px-3 rounded-lg text-muted transition-colors hover:text-fg aria-[current=true]:text-fg aria-[current=true]:bg-surface-2';
+---
+
+<header class="site-header sticky top-0 z-40 border-b border-line bg-bg/95 pt-[env(safe-area-inset-top)]">
+  <div class="wrap flex h-[var(--header-h)] items-center gap-4">
+    <a href={`/${lang}/`} class="mr-auto flex items-center gap-2.5 font-display text-step-0 font-semibold tracking-tight whitespace-nowrap">
+      <span class="grid size-8 place-items-center rounded-lg bg-accent font-mono text-xs font-medium text-accent-fg" aria-hidden="true">FA</span>
+      <span>Fanilo<span class="sr-only xl:not-sr-only"> Andriantenaina</span></span>
+    </a>
+
+    <nav aria-label={c.ui.menu} class="hidden lg:block">
+      <ul class="flex gap-1 text-step--1">
+        {links.map((l) => <li><a href={`/${lang}/#${l.id}`} data-nav={l.id} class={navLink}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="flex items-center">
+      <ul class="meta hidden sm:flex" aria-label="Language">
+        {
+          LANGS.map((l) => (
+            <li>
+              <a
+                href={`/${l}/${path}`}
+                hreflang={l}
+                lang={l}
+                aria-current={l === lang ? 'true' : undefined}
+                class="inline-flex size-11 items-center justify-center uppercase transition-colors hover:text-fg aria-[current=true]:text-fg"
+              >
+                {l}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <PaletteSwitcher label={c.ui.palette} id="palette-menu" />
+      <button
+        type="button"
+        data-theme-toggle
+        aria-pressed="false"
+        aria-label={c.ui.theme}
+        class="inline-flex size-11 items-center justify-center text-muted transition-colors hover:text-fg"
+      >
+        <svg class="size-[18px] dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+        </svg>
+        <svg class="hidden size-[18px] dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+      </button>
+      <a
+        href={immersive}
+        data-version-switch="3d"
+        title={c.ui.versionHint}
+        class="btn-ghost ml-1 hidden min-h-10 gap-2 px-3 py-1.5 text-step--1 sm:inline-flex"
+      >
+        <svg class="size-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true">
+          <path d={cube}></path>
+        </svg>
+        <span class="xl:hidden" aria-hidden="true">3D</span>
+        <span class="sr-only xl:not-sr-only">{c.ui.otherVersion}</span>
+      </a>
+      <a href={`/${lang}/#contact`} class="btn ml-2 hidden min-h-10 px-4 py-2 text-step--1 sm:inline-flex lg:hidden">{c.nav.contact}</a>
+      <button
+        type="button"
+        data-menu-button
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        class="-mr-2 inline-flex min-h-11 items-center px-2 text-step--1 font-medium lg:hidden"
+      >
+        {c.ui.menu}
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-menu" hidden aria-label={c.ui.menu} class="border-t border-line lg:hidden">
+    <ul class="wrap py-2">
+      {
+        links.map((l) => (
+          <li class="border-b border-line last:border-0">
+            <a href={`/${lang}/#${l.id}`} class="flex min-h-12 items-center font-display text-step-2 font-semibold">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="flex gap-2 pt-2 sm:hidden">
+        {
+          LANGS.map((l) => (
+            <a
+              href={`/${l}/${path}`}
+              hreflang={l}
+              lang={l}
+              aria-current={l === lang ? 'true' : undefined}
+              class="meta inline-flex min-h-11 items-center rounded-lg border border-line px-4 uppercase aria-[current=true]:border-accent aria-[current=true]:text-fg"
+            >
+              {l}
+            </a>
+          ))
+        }
+      </li>
+      <li class="pt-3 pb-1">
+        <a href={immersive} data-version-switch="3d" class="card flex items-center gap-4 p-4">
+          <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-accent/12 text-accent" aria-hidden="true">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d={cube}></path></svg>
+          </span>
+          <span>
+            <span class="block font-semibold">{c.ui.otherVersion} →</span>
+            <span class="block text-step--1 text-muted">{c.ui.versionHint}</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>

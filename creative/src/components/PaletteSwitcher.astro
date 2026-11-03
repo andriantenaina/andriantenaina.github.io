@@ -1,0 +1,47 @@
+---
+import { PALETTES } from '@fa/shared/palettes';
+
+interface Props {
+  label: string;
+  id: string;
+}
+const { label, id } = Astro.props;
+---
+
+<div class="relative">
+  <button
+    type="button"
+    data-palette-toggle
+    aria-expanded="false"
+    aria-controls={id}
+    aria-label={label}
+    class="inline-flex size-11 items-center justify-center text-muted transition-colors hover:text-fg"
+  >
+    <span class="grid size-[18px] grid-cols-2 overflow-hidden rounded-full border border-line" aria-hidden="true">
+      <span class="bg-accent"></span><span class="bg-accent-2"></span>
+    </span>
+  </button>
+  <div id={id} hidden class="absolute top-full right-0 z-50 mt-2 w-48 rounded-lg border border-line bg-bg p-2 shadow-2xl shadow-black/20">
+    <p class="meta px-2 pt-1 pb-2">{label}</p>
+    <ul>
+      {
+        PALETTES.map((p) => (
+          <li>
+            <button
+              type="button"
+              data-palette-option={p.id}
+              aria-pressed="false"
+              class="flex min-h-11 w-full items-center gap-3 rounded-lg px-2 text-left text-step--1 transition-colors hover:bg-surface-2 aria-pressed:bg-surface-2 aria-pressed:font-medium"
+            >
+              <span class="grid size-6 shrink-0 grid-cols-2 overflow-hidden rounded-full border border-line" aria-hidden="true">
+                <span style={`background:${p.swatch[0]}`} />
+                <span style={`background:${p.swatch[1]}`} />
+              </span>
+              {p.label}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

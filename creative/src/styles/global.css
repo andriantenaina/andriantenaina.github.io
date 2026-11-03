@@ -1,0 +1,231 @@
+@import 'tailwindcss';
+@import '@fa/shared/palettes.css';
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --text-step--1: clamp(0.875rem, 0.85rem + 0.13vw, 0.95rem);
+  --text-step-0: clamp(1.0625rem, 1.026rem + 0.18vw, 1.1875rem);
+  --text-step-1: clamp(1.275rem, 1.21rem + 0.33vw, 1.484rem);
+  --text-step-2: clamp(1.53rem, 1.42rem + 0.55vw, 1.855rem);
+  --text-step-3: clamp(1.9rem, 1.6rem + 1.5vw, 2.9rem);
+  /* Sized so the 14-letter surname always fits on one line, from 320px to ultrawide. */
+  --text-poster: clamp(2rem, 10.5vw, 10rem);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-fg: var(--accent-fg);
+  --color-surface-2: var(--surface-2);
+
+  --radius-sm: 4px;
+}
+
+/* Colours come from the shared palettes (same switcher as the "pro" site). */
+:root {
+  --header-h: 3.75rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: var(--bg);
+    scroll-padding-top: calc(var(--header-h) + 3rem);
+  }
+
+  body {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-step-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p, li, dd {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+
+  main:focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: max(1.25rem, env(safe-area-inset-left)) max(1.25rem, env(safe-area-inset-right));
+  }
+  @media (min-width: 48rem) {
+    .wrap {
+      padding-inline: max(2.5rem, env(safe-area-inset-left)) max(2.5rem, env(safe-area-inset-right));
+    }
+  }
+
+  /* Condensed poster type (Archivo width axis). */
+  .poster {
+    font-stretch: 72%;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+  }
+  .condensed {
+    font-stretch: 80%;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--1);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Opaque reading panel on top of the 3D scene (no blur, no glass). */
+  .panel {
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 64rem) {
+    .panel {
+      border-top: 0;
+      border-left: 1px solid var(--line);
+    }
+  }
+
+  .link {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--fg) 30%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 150ms, color 150ms;
+  }
+  @media (hover: hover) {
+    .link:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    min-height: 44px;
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    transition: background-color 150ms, color 150ms;
+    touch-action: manipulation;
+  }
+  @media (hover: hover) {
+    .btn:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+  }
+
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    border-color: transparent;
+  }
+  .field:user-invalid {
+    border-color: oklch(0.55 0.2 25);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+@media (forced-colors: active) {
+  .btn,
+  .field {
+    border: 1px solid CanvasText;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 1.6cm;
+  }
+  :root,
+  .dark {
+    --bg: #fff;
+    --line: #bbb;
+    --fg: #000;
+    --muted: #333;
+    --accent: #000;
+  }
+  .no-print,
+  .site-header,
+  form,
+  canvas {
+    display: none !important;
+  }
+  .panel {
+    border: 0;
+  }
+  a[href^='http']:not([data-raw])::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+  li,
+  dl > div,
+  article {
+    break-inside: avoid;
+  }
+}

@@ -1,0 +1,174 @@
+---
+import { LANGS, getContent, profile, type Lang } from '@fa/shared';
+import { personJsonLd } from '@fa/shared/seo';
+import Layout from '../../layouts/Layout.astro';
+import SceneLoader from '../../components/SceneLoader.astro';
+import StageRail from '../../components/StageRail.astro';
+import Panel from '../../components/Panel.astro';
+import CaseStudy from '../../components/CaseStudy.astro';
+import Contact from '../../components/Contact.astro';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const c = getContent(lang);
+const h = c.hero;
+const row = 'grid gap-x-8 gap-y-1 border-t border-line py-5 sm:grid-cols-[10rem_1fr]';
+---
+
+<Layout lang={lang} jsonLd={personJsonLd(lang, Astro.site!.href)}>
+  <SceneLoader />
+  <StageRail lang={lang} />
+
+  <!-- Hero: poster -->
+  <section class="relative flex min-h-[100vh] min-h-svh flex-col justify-end pt-[calc(var(--header-h)+5rem)] pb-[clamp(2.5rem,6vw,5rem)]">
+    <div class="wrap">
+      <p class="meta">{h.role} · {h.location} · UTC+3</p>
+      <h1 class="poster mt-4 text-poster">
+        <span class="block">Fanilo</span>
+        <span class="block">Andriantenaina</span>
+      </h1>
+      <div class="mt-10 grid gap-8 border-t border-line pt-8 lg:grid-cols-12 lg:gap-x-8">
+        <div class="lg:col-span-6">
+          <p class="condensed text-step-2 leading-tight">{h.headline}</p>
+          <p class="mt-4 max-w-[56ch] text-muted">{h.intro}</p>
+        </div>
+        <div class="flex flex-col items-start gap-5 lg:col-span-4 lg:col-start-9">
+          <p class="text-step--1">{h.available}</p>
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a href={`mailto:${profile.email}`} class="btn">{h.ctaEmail} <span aria-hidden="true">→</span></a>
+            <a href={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}${profile.cv[lang].slice(1)}`} target="_blank" rel="noopener" class="link inline-flex min-h-11 items-center">{c.contact.cvTitle} (PDF)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Panel id="brief" title={c.briefTitle} index={0}>
+    <dl class="border-b border-line">
+      {
+        c.stats.map((s) => (
+          <div class="grid grid-cols-[6.75rem_1fr] items-baseline gap-x-5 border-t border-line py-4 sm:grid-cols-[9rem_1fr]">
+            <dt class="condensed num text-step-2 leading-tight text-accent">{s.value}</dt>
+            <dd class="max-w-[52ch] text-muted">{s.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Panel>
+
+  <Panel id="work" title={c.work.title} index={1}>
+    <p class="mb-12 max-w-[56ch] text-step-1 leading-normal text-muted">{c.work.intro}</p>
+    {c.caseStudies.map((cs, i) => <CaseStudy cs={cs} index={i} total={c.caseStudies.length} labels={c.labels} />)}
+  </Panel>
+
+  <Panel id="about" title={c.about.title} index={2}>
+    <div class="max-w-[62ch] space-y-5">
+      {c.about.story.map((p, i) => <p class={i === 0 ? 'condensed text-step-2 leading-tight' : 'text-muted'}>{p}</p>)}
+    </div>
+    <dl class="mt-10 grid gap-x-8 sm:grid-cols-2">
+      {
+        c.about.strengths.map((s) => (
+          <div class="border-t border-line py-4">
+            <dt class="font-semibold">{s.title}</dt>
+            <dd class="mt-1 text-muted">{s.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <dl class="mt-10 grid gap-8 text-step--1 sm:grid-cols-3">
+      <div>
+        <dt class="meta">{c.about.lookingTitle}</dt>
+        <dd class="mt-2"><ul class="space-y-1.5">{c.about.looking.map((l) => <li>{l}</li>)}</ul></dd>
+      </div>
+      <div>
+        <dt class="meta">{c.about.languagesTitle}</dt>
+        <dd class="mt-2"><ul class="space-y-1.5">{c.about.languages.map((l) => <li>{l.name} <span class="text-muted">· {l.level}</span></li>)}</ul></dd>
+      </div>
+      <div>
+        <dt class="meta">{c.about.timezoneTitle}</dt>
+        <dd class="mt-2 text-muted">{c.about.timezone}</dd>
+      </div>
+    </dl>
+  </Panel>
+
+  <Panel id="skills" title={c.skills.title} index={3}>
+    <p class="max-w-[56ch] text-muted">{c.skills.intro}</p>
+    <dl class="mt-8 border-b border-line">
+      {
+        c.skills.groups.map((g) => (
+          <div class={row}>
+            <dt class="font-semibold">{g.name}</dt>
+            <dd>
+              <ul class="flex flex-wrap gap-x-5 gap-y-1.5">
+                {g.items.map((it) => (
+                  <li>
+                    {it.name}
+                    {it.years && <span class="meta num ml-1.5">{c.skills.yearsLabel(it.years)}</span>}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Panel>
+
+  <Panel id="journey" title={c.journey.title} index={4}>
+    <h3 class="meta">{c.journey.experienceTitle}</h3>
+    <ol class="mt-4">
+      {
+        c.journey.jobs.map((j) => (
+          <li class={row}>
+            <p class="meta num pt-1">{j.period}</p>
+            <div>
+              <p class="condensed text-step-1 leading-snug">{j.title}</p>
+              <p class="text-step--1 text-muted">
+                {j.org} · {j.place} · {j.type}
+              </p>
+              <ul class="mt-3 list-disc space-y-1 pl-5 text-muted marker:text-line">
+                {j.points.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <h3 class="meta mt-12">{c.journey.educationTitle}</h3>
+    <ol class="mt-4">
+      {
+        c.journey.education.map((e) => (
+          <li class={row}>
+            <p class="meta num pt-1">{e.period}</p>
+            <div>
+              <p class="condensed text-step-1 leading-snug">{e.degree}</p>
+              <p class="text-step--1 text-muted">{e.school}</p>
+              {e.note && <p class="mt-2 text-muted">{e.note}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <h3 class="meta mt-12">{c.otherProjects.title}</h3>
+    <ul class="mt-4 border-b border-line">
+      {
+        c.otherProjects.items.map((p) => (
+          <li class={row}>
+            <p class="meta pt-1">{p.org}</p>
+            <div>
+              <p class="condensed text-step-1 leading-snug">{p.title}</p>
+              <p class="mt-1 text-muted">{p.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </Panel>
+
+  <Contact lang={lang} />
+</Layout>

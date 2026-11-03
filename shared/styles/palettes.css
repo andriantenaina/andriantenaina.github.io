@@ -1,0 +1,120 @@
+/*
+ * Colour palettes shared by both sites.
+ * Palette: <html data-palette="cobalt|emerald|violet|klein"> (cobalt by default).
+ * Scheme:  <html class="dark"> for dark mode, light otherwise.
+ * Text colours (fg, muted, accent) keep at least 4.5:1 against bg in every combination.
+ */
+
+:root,
+[data-palette='cobalt'] {
+  --bg: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #eef2f9;
+  --line: #dbe2ee;
+  --fg: #0b1120;
+  --muted: #4a5568;
+  --accent: #2456e6;
+  --accent-2: #0284c7;
+  --accent-fg: #ffffff;
+  --glow: rgb(36 86 230 / 0.14);
+  color-scheme: light;
+}
+.dark,
+.dark[data-palette='cobalt'] {
+  --bg: #0b1120;
+  --surface: #111a2e;
+  --surface-2: #17223b;
+  --line: rgb(148 163 184 / 0.16);
+  --fg: #e8ecf4;
+  --muted: #9aa8bf;
+  --accent: #4d86ff;
+  --accent-2: #7dd3fc;
+  --accent-fg: #06102a;
+  --glow: rgb(77 134 255 / 0.22);
+  color-scheme: dark;
+}
+
+[data-palette='emerald'] {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f1f2f1;
+  --line: #e4e4e7;
+  --fg: #0a0a0b;
+  --muted: #52525b;
+  --accent: #047857;
+  --accent-2: #4d7c0f;
+  --accent-fg: #ffffff;
+  --glow: rgb(4 120 87 / 0.13);
+}
+.dark[data-palette='emerald'] {
+  --bg: #0a0a0b;
+  --surface: #141416;
+  --surface-2: #1b1b1e;
+  --line: rgb(255 255 255 / 0.09);
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --accent: #10b981;
+  --accent-2: #a3e635;
+  --accent-fg: #04130d;
+  --glow: rgb(16 185 129 / 0.2);
+}
+
+[data-palette='violet'] {
+  --bg: #fafaff;
+  --surface: #ffffff;
+  --surface-2: #f2f0fb;
+  --line: #e6e4f0;
+  --fg: #15131f;
+  --muted: #5b5870;
+  --accent: #6440f5;
+  --accent-2: #c0267f;
+  --accent-fg: #ffffff;
+  --glow: rgb(100 64 245 / 0.13);
+}
+.dark[data-palette='violet'] {
+  --bg: #0f0f14;
+  --surface: #17171f;
+  --surface-2: #1f1e2a;
+  --line: rgb(255 255 255 / 0.09);
+  --fg: #f1f0f7;
+  --muted: #a5a4b8;
+  --accent: #8c70ff;
+  --accent-2: #ff6ad5;
+  --accent-fg: #0d0820;
+  --glow: rgb(140 112 255 / 0.22);
+}
+
+[data-palette='klein'] {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --surface-2: #eceef2;
+  --line: #e3e5ea;
+  --fg: #0a0a0a;
+  --muted: #4b4f5c;
+  --accent: #1f3bff;
+  --accent-2: #0a0a0a;
+  --accent-fg: #ffffff;
+  --glow: rgb(31 59 255 / 0.12);
+}
+.dark[data-palette='klein'] {
+  --bg: #08090f;
+  --surface: #10121c;
+  --surface-2: #171a27;
+  --line: rgb(255 255 255 / 0.1);
+  --fg: #f5f6fa;
+  --muted: #a0a4b6;
+  --accent: #5c73ff;
+  --accent-2: #ffffff;
+  --accent-fg: #04071f;
+  --glow: rgb(92 115 255 / 0.24);
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --line: #7b8496;
+  }
+  .dark {
+    --line: #8a93a6;
+    --muted: #c9d0dc;
+  }
+}
