@@ -4,9 +4,9 @@ import { dataPlatformDiagram, devopsDiagram, observabilityDiagram } from './diag
 export const en: Content = {
   lang: 'en',
   meta: {
-    title: 'Fanilo Andriantenaina · Data Engineer & DevOps (Kafka, Spark, Airflow)',
+    title: 'Fanilo Andriantenaina · Data Engineer & DevOps',
     description:
-      'Data Engineer & DevOps with 4+ years in production: Kafka, Debezium, Spark, Airflow, StarRocks, ELK, Kubernetes. Available now for remote work or relocation (Canada, Belgium, France).',
+      'Data Engineer & DevOps, 4+ years in production: Kafka, Spark, Airflow, StarRocks, ELK, Kubernetes. Available now for remote work or relocation.',
     ogAlt: 'Fanilo Andriantenaina, Data & DevOps Engineer',
   },
   nav: { work: 'Work', about: 'About', skills: 'Skills', journey: 'Journey', contact: 'Contact' },
@@ -55,6 +55,9 @@ export const en: Content = {
   caseStudies: [
     {
       slug: 'data-platform',
+      seoTitle: 'Real-time data platform (CDC)',
+      seoDescription:
+        'StarRocks warehouse fed in real time by Debezium and Kafka, Spark and Airflow ETL, 10+ KPI dashboards: 1+ day of manual reporting saved weekly.',
       kicker: 'Data Engineering · Real time',
       title: 'Data platform & centralized analytical warehouse',
       summary:
@@ -95,6 +98,9 @@ export const en: Content = {
     },
     {
       slug: 'observability',
+      seoTitle: 'Company-wide ELK observability',
+      seoDescription:
+        'Logging policy and ELK stack for 10+ apps and servers, Kibana and Grafana alerting: incidents detected within minutes instead of hours.',
       kicker: 'Observability · Governance',
       title: 'Company-wide observability platform',
       summary:
@@ -137,6 +143,9 @@ export const en: Content = {
     },
     {
       slug: 'devops',
+      seoTitle: 'DevOps: Docker, Kubernetes, CI/CD',
+      seoDescription:
+        'Data and monitoring services containerized with Docker, deployed on Kubernetes through CI/CD, plus a C# / .NET quality-control app.',
       kicker: 'DevOps · Software',
       title: 'DevOps automation & quality-control application',
       summary:

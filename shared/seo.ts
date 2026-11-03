@@ -1,7 +1,10 @@
 import { getContent, headlineStack, profile, type Lang } from './content/index';
 
-/** Date the content was last updated (shown to search engines as dateModified). */
-export const CONTENT_UPDATED = '2026-11-03';
+/**
+ * When the content was last updated (shown to search engines as dateModified).
+ * Google requires a full ISO 8601 date-time with time zone, not just a date.
+ */
+export const CONTENT_UPDATED = '2026-11-03T12:00:00+03:00';
 
 const personId = (siteUrl: string) => `${siteUrl.replace(/\/$/, '')}/#person`;
 

@@ -4,9 +4,9 @@ import { dataPlatformDiagram, devopsDiagram, observabilityDiagram } from './diag
 export const fr: Content = {
   lang: 'fr',
   meta: {
-    title: 'Fanilo Andriantenaina · Data Engineer & DevOps (Kafka, Spark, Airflow)',
+    title: 'Fanilo Andriantenaina · Data Engineer & DevOps',
     description:
-      'Data Engineer & DevOps, 4+ ans en production : Kafka, Debezium, Spark, Airflow, StarRocks, ELK, Kubernetes. Disponible immédiatement, télétravail ou relocalisation (Canada, Belgique, France).',
+      'Data Engineer & DevOps, 4+ ans en production : Kafka, Spark, Airflow, StarRocks, ELK, Kubernetes. Disponible, en télétravail ou relocalisation.',
     ogAlt: 'Fanilo Andriantenaina, Data & DevOps Engineer',
   },
   nav: { work: 'Réalisations', about: 'À propos', skills: 'Compétences', journey: 'Parcours', contact: 'Contact' },
@@ -55,6 +55,9 @@ export const fr: Content = {
   caseStudies: [
     {
       slug: 'data-platform',
+      seoTitle: 'Plateforme data temps réel (CDC)',
+      seoDescription:
+        'Entrepôt StarRocks alimenté en temps réel par Debezium et Kafka, ETL Spark et Airflow, 10+ dashboards KPI : 1 jour+ de reporting économisé par semaine.',
       kicker: 'Data Engineering · Temps réel',
       title: 'Plateforme data & entrepôt analytique centralisé',
       summary:
@@ -95,6 +98,9 @@ export const fr: Content = {
     },
     {
       slug: 'observability',
+      seoTitle: 'Observabilité ELK en entreprise',
+      seoDescription:
+        'Politique de logs et stack ELK pour 10+ applications et serveurs, alertes Kibana et Grafana : incidents détectés en minutes au lieu d’heures.',
       kicker: 'Observabilité · Gouvernance',
       title: "Plateforme d’observabilité à l’échelle de l’entreprise",
       summary:
@@ -138,6 +144,9 @@ export const fr: Content = {
     },
     {
       slug: 'devops',
+      seoTitle: 'DevOps : Docker, Kubernetes, CI/CD',
+      seoDescription:
+        'Services data et supervision conteneurisés avec Docker, déployés sur Kubernetes via CI/CD, et application C# / .NET de contrôle qualité.',
       kicker: 'DevOps · Logiciel',
       title: 'Industrialisation DevOps & application de contrôle qualité',
       summary:

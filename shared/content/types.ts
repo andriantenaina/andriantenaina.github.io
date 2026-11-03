@@ -30,6 +30,9 @@ export interface Diagram {
 export interface CaseStudy {
   slug: string;
   title: string;
+  /** Search result title (≤ 36 chars, " · Fanilo Andriantenaina" is appended) and description (≤ 155 chars). */
+  seoTitle: string;
+  seoDescription: string;
   kicker: string;
   summary: string;
   highlights: string[];
